@@ -9,30 +9,38 @@ class App extends React.Component {
       displayCity: "",
       lat: "",
       lon: "",
-      image: "",
+      image: {},
     };
   }
   getCityName = (event) => {
-    console.log(event.target.value);
     this.setState({
       city: event.target.value,
     });
   };
   submitForm = async (event) => {
     event.preventDefault();
-    let url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_KEY}&city=${this.state.city}&format=json`;
-    let response = await axios.get(url);
-    this.setState({
-      displayCity: response.data[0].display_name,
-      lat: response.data[0].lat,
-      lon: response.data[0].lon,
-    });
-    let MapUrl = `https://maps.locationiq.com/v3/staticmap?key=${
-      process.env.REACT_APP_KEY
-    }&center=${(this.state.lat, this.state.lon)}&zoom=${12}`;
-    console.log(MapUrl);
-    let showMap = await axios.get(MapUrl);
-    console.log(showMap.data);
+
+    try {
+      let url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_KEY}&city=${this.state.city}&format=json`;
+      let response = await axios.get(url);
+      console.log(response);
+      this.setState({
+        displayCity: response.data[0].display_name,
+        lat: response.data[0].lat,
+        lon: response.data[0].lon,
+      });
+    } catch (error) {
+      alert("code error geocode");
+    }
+
+    // let MapUrl = `https://maps.locationiq.com/v3/staticmap?key=${
+    //   process.env.REACT_APP_KEY
+    // }&center=${31.9515694},${35.9239625}&zoom=18`;
+    // let showMap = await axios.get(MapUrl);
+    // console.log(this.state.image);
+    // this.setState({
+    //   image: showMap,
+    // });
   };
   render() {
     return (
@@ -43,8 +51,12 @@ class App extends React.Component {
           <input type="submit" value="Explore!"></input>
         </form>
         <p>{this.state.displayCity}</p>
-        <p>lat: {this.state.lat}</p>
-        <p>lon: {this.state.lon}</p>
+        <p> {this.state.lat}</p>
+        <p> {this.state.lon}</p>
+        <img
+          src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_KEY}&center=${this.state.lat},${this.state.lon}&zoom=11`}
+          alt={`${this.state.city} map`}
+        />
       </div>
     );
   }
