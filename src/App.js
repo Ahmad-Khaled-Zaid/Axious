@@ -9,7 +9,7 @@ class App extends React.Component {
       displayCity: "",
       lat: "",
       lon: "",
-      image: {},
+      displayContent: false,
     };
   }
   getCityName = (event) => {
@@ -28,9 +28,15 @@ class App extends React.Component {
         displayCity: response.data[0].display_name,
         lat: response.data[0].lat,
         lon: response.data[0].lon,
+        displayContent: true,
       });
     } catch (error) {
-      alert("code error geocode");
+      console.log(error);
+      this.setState({
+        displayContent: false,
+      });
+      alert(error);
+
     }
 
     // let MapUrl = `https://maps.locationiq.com/v3/staticmap?key=${
@@ -50,13 +56,17 @@ class App extends React.Component {
           <input id="city" type="text" onChange={this.getCityName}></input>
           <input type="submit" value="Explore!"></input>
         </form>
-        <p>{this.state.displayCity}</p>
-        <p> {this.state.lat}</p>
-        <p> {this.state.lon}</p>
-        <img
-          src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_KEY}&center=${this.state.lat},${this.state.lon}&zoom=11`}
-          alt={`${this.state.city} map`}
-        />
+        {this.state.displayContent && (
+          <div>
+            <p>{this.state.displayCity}</p>
+            <p> {this.state.lat}</p>
+            <p> {this.state.lon}</p>
+            <img
+              src={`https://maps.locationiq.com/v3/staticmap?key=${process.env.REACT_APP_KEY}&center=${this.state.lat},${this.state.lon}&zoom=7`}
+              alt={`${this.state.city} map`}
+            />
+          </div>
+        )}
       </div>
     );
   }
