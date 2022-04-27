@@ -19,10 +19,12 @@ class App extends React.Component {
   };
   submitForm = async (event) => {
     event.preventDefault();
-
     try {
       let url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.REACT_APP_KEY}&city=${this.state.city}&format=json`;
       let response = await axios.get(url);
+      let weatherReq = `http://localhost:3003/weather?searchQuery=${this.state.city}`;
+      let response2 = await axios.get(weatherReq);
+      console.log(response2);
       console.log(response);
       this.setState({
         displayCity: response.data[0].display_name,
@@ -31,22 +33,11 @@ class App extends React.Component {
         displayContent: true,
       });
     } catch (error) {
-      console.log(error);
       this.setState({
         displayContent: false,
       });
       alert(error);
-
     }
-
-    // let MapUrl = `https://maps.locationiq.com/v3/staticmap?key=${
-    //   process.env.REACT_APP_KEY
-    // }&center=${31.9515694},${35.9239625}&zoom=18`;
-    // let showMap = await axios.get(MapUrl);
-    // console.log(this.state.image);
-    // this.setState({
-    //   image: showMap,
-    // });
   };
   render() {
     return (
